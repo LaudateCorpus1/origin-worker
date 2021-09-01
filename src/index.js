@@ -218,7 +218,12 @@ async function handleRequest(request, sentry) {
     // Set headers.
     resp_headers.set("ETag", `"${metadata.etag}"`);
     resp_headers.set("Last-Modified", metadata.last_modified);
-    resp_headers.set("Content-Type", `${content_type}; charset=utf-8`);
+    if (ext === "wasm") {
+      // No extra parameters are allowed for wasm.
+      resp_headers.set("Content-Type", `${content_type}`);
+    } else {
+      resp_headers.set("Content-Type", `${content_type}; charset=utf-8`);
+    }
     resp_headers.set("Content-Length", value.byteLength);
     resp_headers.set("Cache-Control", "no-transform, public, max-age=30672000");
     resp_headers.set("Timing-Allow-Origin", "*");
